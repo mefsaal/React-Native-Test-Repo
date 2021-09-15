@@ -34,6 +34,7 @@ return (
          <input  ref={todoTaskRef} type="text" placeholder="Nueva Tarea" />
         <button onClick={ handleTodoAdd}> ➕</button>
         <button>🗑</button>
+        <div>Te queda {todos.filter((todo) => !todo.completed).length}  tareas por terminar </div>
          </Fragment>
          );
 }
