@@ -1,9 +1,8 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { TodoList } from "./components/TodoList";
 
-
-
+const KEY = "todoApp.todos";
 
 export  function App() {
 const [todos, setTodos] = useState([
@@ -11,6 +10,17 @@ const [todos, setTodos] = useState([
 
 ]);
     const todoTaskRef = useRef ();
+
+    useEffect(() => {
+        const storedTodos = JSON.parse(localStorage.getItem(KEY));
+        if (storedTodos) {  
+            setTodos(storedTodos);
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('todoApp.todos', JSON.stringify(todos));
+    }, [todos]) ;   
 
     const toogleTodo = (id) => {
         const newTodos = [...todos];
@@ -27,13 +37,19 @@ const [todos, setTodos] = useState([
         });
         todoTaskRef.current.value = null;
     };
+
+    const handleClearAll = () => {
+        const newTodos = todos.filter((todo) => !todo.completed);
+        setTodos(newTodos);};
+
+
 return (
          <Fragment>
 
          <TodoList todos={todos} toogleTodo={toogleTodo}/>
          <input  ref={todoTaskRef} type="text" placeholder="Nueva Tarea" />
         <button onClick={ handleTodoAdd}> ➕</button>
-        <button>🗑</button>
+        <button onClick={ handleClearAll} >🗑</button>
         <div>Te queda {todos.filter((todo) => !todo.completed).length}  tareas por terminar </div>
          </Fragment>
          );
